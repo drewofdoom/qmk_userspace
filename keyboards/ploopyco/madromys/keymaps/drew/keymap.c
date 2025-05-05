@@ -17,50 +17,6 @@
  */
 #include QMK_KEYBOARD_H
 
-// bool is_drag_scroll_vert = false;
-// float scroll_accumulated_vert = 0;
-
-// enum custom_keycodes {
-//     DRAG_SCROLL_VERT,
-// };
-
-// bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-//     switch (keycode) {
-//         case DRAG_SCROLL_VERT:
-//             if (record->event.pressed) {
-//                 is_drag_scroll_vert = true;
-//             } else {
-//                 is_drag_scroll_vert = false;
-//             }
-//             return false; // Prevent further processing
-//         default:
-//             return true;
-//     }
-// }
-
-// report_mouse_t pointing_device_task_kb_vert(report_mouse_t mouse_report) {
-//     if (is_drag_scroll_vert) {
-//         scroll_accumulated_vert += (float)mouse_report.y / PLOOPY_DRAGSCROLL_DIVISOR_V;
-
-//         // Assign integer parts of accumulated scroll values to the mouse report
-// #ifdef PLOOPY_DRAGSCROLL_INVERT
-//         mouse_report.v = -(int8_t)scroll_accumulated_vert;
-// #else
-//         mouse_report.v = (int8_t)scroll_accumulated_vert;
-// #endif
-
-//         // Update accumulated scroll values by subtracting the integer parts
-//         scroll_accumulated_vert -= (int8_t)scroll_accumulated_vert;
-
-//         // Clear the X and Y values of the mouse report
-//         mouse_report.y = 0;
-
-//         mouse_report.y = 0;
-//     }
-
-//     return pointing_device_task_user(mouse_report);
-// }
-
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT( KC_BTN4, KC_BTN5, DRAG_SCROLL, KC_BTN2, KC_BTN1, KC_BTN3 )
 };
