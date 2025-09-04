@@ -22,40 +22,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
-    static uint16_t scroll_timer = 0;
-    static int8_t last_dominant = 0; // 1=v, 2=h
-
-    int8_t h_abs = abs(mouse_report.h);
-    int8_t v_abs = abs(mouse_report.v);
-
-    // Apply deadzone first
-    if (h_abs <= H_SCROLL_DEADZONE) mouse_report.h = 0;
-
-    // Update values after deadzone
-    h_abs = abs(mouse_report.h);
-    v_abs = abs(mouse_report.v);
-
-    // Determine and lock to dominant axis
-    if (h_abs > 0 || v_abs > 0) {
-        scroll_timer = timer_read();
-
-        if (v_abs > h_abs * SCROLL_SNAP_RATIO) {
-            last_dominant = 1;
-        } else if (h_abs > v_abs * SCROLL_SNAP_RATIO) {
-            last_dominant = 2;
-        }
-    }
-
-    // Apply axis locking based on recent dominant direction
-    if (timer_elapsed(scroll_timer) < SCROLL_TIMEOUT) {
-        if (last_dominant == 1) {
-            mouse_report.h = 0;
-        } else if (last_dominant == 2) {
-            mouse_report.v = 0;
-        }
-    } else {
-        last_dominant = 0;  // Reset after timeout
-    }
-
+    mouse_report.h = 0; // Disable horizontal scroll
+    // Keep vertical scroll intact: mouse_report.v remains unchanged
     return mouse_report;
 }
