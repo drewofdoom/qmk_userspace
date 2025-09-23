@@ -17,12 +17,44 @@
  */
 #include QMK_KEYBOARD_H
 
-const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [0] = LAYOUT( KC_BTN4, KC_BTN5, DRAG_SCROLL, KC_BTN2, KC_BTN1, KC_BTN3 )
+// External variable from ploopyco.c
+extern bool is_drag_scroll;
+
+// Custom keycode for vertical-only scrolling
+enum custom_keycodes {
+    SCROLL_VERT = SAFE_RANGE,
 };
 
+// State variable to track vertical scroll mode
+static bool vertical_scroll_mode = false;
+
+const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+    // Replace one of your buttons with SCROLL_VERT
+    [0] = LAYOUT( KC_BTN5, SCROLL_VERT, DRAG_SCROLL, KC_BTN2, KC_BTN1, KC_BTN3 )
+};
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case SCROLL_VERT:
+            if (record->event.pressed) {
+                // Toggle mode: press once to enable, press again to disable
+                vertical_scroll_mode = !vertical_scroll_mode;
+            }
+            return false;
+    }
+    return true;
+}
+
+// Override the pointing device task to filter horizontal scrolling
 report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
-    mouse_report.h = 0; // Disable horizontal scroll
-    // Keep vertical scroll intact: mouse_report.v remains unchanged
+    if (vertical_scroll_mode && is_drag_scroll) {
+        // When vertical scroll mode is active, zero out horizontal scroll
+        mouse_report.h = 0;
+
+        // Optionally, you can also disable regular mouse movement during vertical scroll
+        // Uncomment the next two lines if you want cursor movement disabled during scroll mode
+        // mouse_report.x = 0;
+        // mouse_report.y = 0;
+    }
     return mouse_report;
 }
