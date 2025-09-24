@@ -30,7 +30,7 @@ static bool vertical_scroll_mode = false;
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // Replace one of your buttons with SCROLL_VERT
-    [0] = LAYOUT( KC_BTN5, SCROLL_VERT, DRAG_SCROLL, KC_BTN2, KC_BTN1, KC_BTN3 )
+    [0] = LAYOUT( KC_BTN4, SCROLL_VERT, DRAG_SCROLL, KC_BTN2, KC_BTN1, KC_BTN3 )
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
