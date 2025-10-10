@@ -31,7 +31,7 @@
 #define POINTING_DEVICE_INVERT_Y
 
 // Debounce buttons
-#define DEBOUNCE 10
+#define DEBOUNCE 30
 
 // DPI
 #define PLOOPY_DPI_OPTIONS { 600, 900, 1200, 1600, 2400 }
