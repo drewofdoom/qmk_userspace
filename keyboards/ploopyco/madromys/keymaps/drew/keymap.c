@@ -19,53 +19,11 @@
 
 // External variable from ploopyco.c
 extern bool is_drag_scroll;
-
-// Custom keycode for our modified drag scroll
-enum custom_keycodes {
-    DRAG_SCROLL_CUSTOM = SAFE_RANGE,
-};
-
-// State variables
-static bool vertical_scroll_mode = false;
-static uint16_t drag_scroll_timer = 0;
-static bool mode_changed_on_hold = false;
-
-// Threshold in milliseconds to distinguish tap from hold
-#define DRAG_SCROLL_TAP_TERM 200
+static bool vertical_scroll_mode = true;
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [0] = LAYOUT( KC_BTN4, KC_BTN5, DRAG_SCROLL_CUSTOM, KC_BTN2, KC_BTN1, KC_BTN3 )
+    [0] = LAYOUT( KC_BTN4, KC_BTN5, DRAG_SCROLL, KC_BTN2, KC_BTN1, KC_BTN3 )
 };
-
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-        case DRAG_SCROLL_CUSTOM:
-            if (record->event.pressed) {
-                // Start timer on press
-                drag_scroll_timer = timer_read();
-                mode_changed_on_hold = false;
-            } else {
-                // On release, check if it was a tap or hold
-                if (timer_elapsed(drag_scroll_timer) < DRAG_SCROLL_TAP_TERM && !mode_changed_on_hold) {
-                    // It was a tap - toggle scroll mode on/off
-                    is_drag_scroll = !is_drag_scroll;
-                }
-            }
-            return false;
-    }
-    return true;
-}
-
-// Check for long press in matrix scan
-void matrix_scan_user(void) {
-    if (drag_scroll_timer > 0 &&
-        timer_elapsed(drag_scroll_timer) >= DRAG_SCROLL_TAP_TERM &&
-        !mode_changed_on_hold) {
-        // Long press detected - toggle vertical/omni mode
-        vertical_scroll_mode = !vertical_scroll_mode;
-        mode_changed_on_hold = true;
-    }
-}
 
 // Override the pointing device task to filter horizontal scrolling
 report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
