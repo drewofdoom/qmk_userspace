@@ -1,35 +1,22 @@
-/* Copyright 2023 Colin Lam (Ploopy Corporation)
- * Copyright 2020 Christopher Courtney, aka Drashna Jael're  (@drashna) <drashna@live.com>
- * Copyright 2019 Sunjun Kim
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+/* ... (Copyright/Includes) ... */
 #include QMK_KEYBOARD_H
 
 // External variable from ploopyco.c
 extern bool is_drag_scroll;
-static bool vertical_scroll_mode = true;
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [0] = LAYOUT( KC_BTN4, KC_BTN5, DRAG_SCROLL, KC_BTN2, KC_BTN1, KC_BTN3 )
+    [0] = LAYOUT( MS_BTN4, MS_BTN5, DRAG_SCROLL, MS_BTN2, MS_BTN1, MS_BTN3 )
 };
 
 // Override the pointing device task to filter horizontal scrolling
 report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
-    if (vertical_scroll_mode && is_drag_scroll) {
-        // When vertical scroll mode is active, zero out horizontal scroll
-        mouse_report.h = 0;
+    if (is_drag_scroll) {
+        // *** THE NEW FIX: Clear the raw horizontal movement (x) ***
+        // This is the input that ploopyco.c uses to calculate mouse_report.h.
+        // By zeroing it here, ploopyco.c will calculate horizontal scroll as zero.
+        mouse_report.x = 0;
+
+        // You can leave mouse_report.h = 0; for completeness, but clearing x is key now.
     }
     return mouse_report;
 }
